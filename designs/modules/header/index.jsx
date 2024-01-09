@@ -14,7 +14,7 @@ export default function Header() {
           src={BankLogo}
           alt="Argent Bank Logo"
         />
-        <h1 class="sr-only">Argent Bank</h1>
+        <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
       <div>
         <NavLink to="/signin" className="main-nav-item">

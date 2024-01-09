@@ -7,7 +7,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 export default function PageLayout() {
   const location = useLocation();
-  const darkRoutes = ["/signin"];
+  const darkRoutes = ["/signin", "/profil"];
   const isDarkRoute = darkRoutes.includes(location.pathname);
 
   return (

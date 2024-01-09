@@ -4,7 +4,6 @@ import Banner from "../../modules/banner";
 
 import Feature from "../../modules/feature";
 
-import imgBanner from "../../img/bank-tree.jpeg";
 import imgFeature1 from "../../img/icon-chat.png";
 import imgFeature2 from "../../img/icon-money.png";
 import imgFeature3 from "../../img/icon-security.png";
