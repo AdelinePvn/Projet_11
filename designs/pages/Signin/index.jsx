@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./signin.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { sendToken } from "../../redux/index";
 
-import { postUserAccount } from "../../useApi";
+import { useApi } from "../../useApi";
 
 export default function SignIn() {
   const {
@@ -22,22 +22,15 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(errors);
+  const { postUserAccount } = useApi();
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     const response = await postUserAccount(data);
-    console.log(response);
-    if (response.status === 200) {
-      console.log("ok");
-      console.log(response);
+    if (response?.status === 200) {
       dispatch(sendToken(response.data.body.token));
 
       navigate("/profil");
     } else {
-      console.log("not ok");
-      console.log(response.message);
       setError("email", {
         type: "manual",
         message: response.message,

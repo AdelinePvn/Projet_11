@@ -1,43 +1,77 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useContext } from "react";
+import { ConnexionTokenContext } from "./context/ConnexionTokenContext";
+import { UserContext } from "./context/UserContext";
+import useAxiosWithInterceptor from "./instanceAxios";
 
-export const postUserAccount = async (data) => {
-  const { email, password } = data;
+export const useApi = () => {
+  const { token, setToken, deleteToken } = useContext(ConnexionTokenContext);
+  const axiosInstance = useAxiosWithInterceptor();
 
-  const response = await axios
-    .post("http://localhost:3001/api/v1/user/login", {
-      email: email,
-      password: password,
-    })
-    .catch((error) => {
-      return error.response.data;
-    });
+  const postUserAccount = async (data) => {
+    const { email, password } = data;
 
-  return response;
-};
+    const response = await axiosInstance
+      .post("http://localhost:3001/api/v1/user/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        setToken(response.data.body.token);
+        return response;
+      })
+      .catch((error) => {
+        return error.response.data;
+      });
 
-export const postUserProfil = async () => {
-  // const token = useSelector((state) => state.login.token);
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODJjZWNjNWM3ZTM2MTkxOGRjNTc1MCIsImlhdCI6MTcwNDI4MTg5OCwiZXhwIjoxNzA0MzY4Mjk4fQ.A8dEaF0_f_DRdkSBFGhC5k91QihADgvPk_cEhivH_6k";
+    return response;
+  };
 
-  if (!token) {
-    throw new Error("Pas de token");
-  }
+  const postUserProfil = async () => {
+    if (!token && token !== "") {
+      throw new Error("Pas de token");
+    }
 
-  const response = await axios
-    .post(
-      "http://localhost:3001/api/v1/user/profile",
-      {},
-      {
-        headers: {
-          authorization: `Bearer ${token}`,
+    const response = await axiosInstance
+      .post(
+        "http://localhost:3001/api/v1/user/profile",
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .catch((error) => {
+        return error.response.data;
+      });
+
+    return response;
+  };
+
+  const putUserProfil = async (data) => {
+    if (!token && token !== "") {
+      throw new Error("Pas de token");
+    }
+
+    const response = await axiosInstance
+      .put(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          ...data,
         },
-      }
-    )
-    .catch((error) => {
-      return error.response.data;
-    });
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .catch((error) => {
+        return error.response.data;
+      });
 
-  return response;
+    return response;
+  };
+
+  return { postUserAccount, postUserProfil, putUserProfil };
 };

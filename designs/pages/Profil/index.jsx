@@ -1,26 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./profil.scss";
-import { postUserProfil } from "../../useApi";
+import { useApi } from "../../useApi";
+import { useForm } from "react-hook-form";
 import AccountItem from "../../modules/Account";
+import { UserContext } from "../../context/UserContext";
 
 export default function Profil() {
   const [profilData, setProfilData] = useState(null);
+  const [displayInput, setDisplayInput] = useState(false);
 
-  const getProfileData = async () => {
-    const response = await postUserProfil();
+  const { user, updateUser } = useContext(UserContext);
 
-    console.log(response);
+  const { putUserProfil } = useApi();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
 
+  const onSubmit = async (data) => {
+    const response = await putUserProfil(data);
     if (response.status === 200) {
-      setProfilData(response.data.body);
+      updateUser();
+      setDisplayInput(false);
+    } else {
+      setError("firstName", {
+        type: "manual",
+        message: response.message,
+      });
     }
   };
-
-  useEffect(() => {
-    getProfileData();
-  }, []);
-
-  console.log(profilData);
 
   return (
     <>
@@ -28,10 +38,32 @@ export default function Profil() {
         <h1>
           Welcome back
           <br />
-          {profilData?.firstName} {profilData?.lastName}!
+          {user?.firstName} {user?.lastName}!
         </h1>
-        <button className="edit-button">Edit Name</button>
+        <button className="edit-button" onClick={() => setDisplayInput(true)}>
+          Edit Name
+        </button>
+        {displayInput && (
+          <form className="change-name" onSubmit={handleSubmit(onSubmit)}>
+            <div className="input-change-name">
+              <input
+                type="text"
+                placeholder={"Prénom"}
+                {...register("firstName", { required: true })}
+              />
+              <input
+                type="text"
+                placeholder={"Nom"}
+                {...register("lastName", { required: true })}
+              />
+            </div>
+            <button type="submit" className="send-button">
+              Envoyer!
+            </button>
+          </form>
+        )}
       </div>
+
       <h2 className="sr-only">Accounts</h2>
       <AccountItem
         accountTitle="Argent Bank Checking (x8349)"

@@ -17,6 +17,18 @@
   .main-nav-item {
     text-decoration: none;
     margin-right: 0.5rem;
+
+    svg {
+      margin-right: 2px;
+    }
+  }
+
+  .main-nav-item-out{
+    text-decoration: none;
+    margin-right: 0.5rem;
+    &:hover{
+      text-decoration: underline;
+    }
   }
   
   .main-nav-item:hover {
