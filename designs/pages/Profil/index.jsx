@@ -48,13 +48,8 @@ export default function Profil() {
             <div className="input-change-name">
               <input
                 type="text"
-                placeholder={"Prénom"}
-                {...register("firstName", { required: true })}
-              />
-              <input
-                type="text"
-                placeholder={"Nom"}
-                {...register("lastName", { required: true })}
+                placeholder={"Pseudonyme"}
+                {...register("userName", { required: true })}
               />
             </div>
             <button type="submit" className="send-button">

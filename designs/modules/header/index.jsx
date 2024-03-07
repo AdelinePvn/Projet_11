@@ -28,7 +28,7 @@ export default function Header() {
         <div>
           <NavLink to="/profil" className="main-nav-item">
             <FontAwesomeIcon icon={faUserCircle} />
-            {user?.firstName}
+            {user?.userName}
           </NavLink>
 
           <NavLink

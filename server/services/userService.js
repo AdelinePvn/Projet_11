@@ -80,7 +80,7 @@ module.exports.updateUserProfile = async serviceData => {
     const user = await User.findOneAndUpdate(
       { _id: decodedJwtToken.id },
       {
-        ...serviceData.body
+        userName: serviceData.body.userName
       },
       { new: true }
     )
