@@ -35,26 +35,55 @@ export default function Profil() {
   return (
     <>
       <div className="header">
-        <h1>
-          Welcome back
-          <br />
-          {user?.firstName} {user?.lastName}!
-        </h1>
-        <button className="edit-button" onClick={() => setDisplayInput(true)}>
-          Edit Name
-        </button>
+        {!displayInput ? (
+          <>
+            <h1>
+              Welcome back
+              <br />
+              {user?.firstName} {user?.lastName}!
+            </h1>
+            <button
+              className="edit-button"
+              onClick={() => setDisplayInput(true)}
+            >
+              Edit Name
+            </button>
+          </>
+        ) : (
+          <h1>Edit user info</h1>
+        )}
+
         {displayInput && (
           <form className="change-name" onSubmit={handleSubmit(onSubmit)}>
             <div className="input-change-name">
+              <label htmlFor="firstName">User name:</label>
               <input
                 type="text"
                 placeholder={"Pseudonyme"}
                 {...register("userName", { required: true })}
               />
             </div>
-            <button type="submit" className="send-button">
-              Envoyer!
-            </button>
+            <br />
+            <div className="input-change-name">
+              <label htmlFor="firstName">First name:</label>
+              <input type="text" placeholder={user?.firstName} disabled />
+            </div>
+            <br />
+            <div className="input-change-name">
+              <label htmlFor="firstName">Last name:</label>
+              <input type="text" placeholder={user?.lastName} disabled />
+            </div>
+            <div className="buttons">
+              <button type="submit" className="send-button">
+                Save
+              </button>
+              <button
+                className="send-button"
+                onClick={() => setDisplayInput(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         )}
       </div>
