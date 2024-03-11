@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 
 import {
   BrowserRouter as Router,
@@ -10,10 +10,20 @@ import Acceuil from "./pages/Acceuil";
 import SignIn from "./pages/Signin";
 import Profil from "./pages/Profil";
 import PageLayout from "./modules/pageLayout";
-import { ConnexionTokenContext } from "./context/ConnexionTokenContext";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfileData } from "./redux";
+import { useApi } from "./useApi";
 
 export default function App() {
-  const { token } = useContext(ConnexionTokenContext);
+  const token = useSelector((state) => state.user.token);
+
+  const dispatch = useDispatch();
+
+  const { postUserProfil } = useApi();
+
+  useEffect(() => {
+    dispatch(getProfileData(postUserProfil));
+  }, [dispatch, postUserProfil]);
 
   const ProtectedRoute = ({ element }) => {
     return token ? element : <Navigate to="/signin" />;

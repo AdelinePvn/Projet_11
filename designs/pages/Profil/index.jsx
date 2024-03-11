@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./profil.scss";
 import { useApi } from "../../useApi";
 import { useForm } from "react-hook-form";
 import AccountItem from "../../modules/Account";
-import { UserContext } from "../../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfileData } from "../../redux";
 
 export default function Profil() {
-  const [profilData, setProfilData] = useState(null);
   const [displayInput, setDisplayInput] = useState(false);
 
-  const { user, updateUser } = useContext(UserContext);
+  const user = useSelector((state) => state.user.user);
 
   const { putUserProfil } = useApi();
   const {
@@ -19,10 +19,13 @@ export default function Profil() {
     setError,
   } = useForm();
 
+  const dispatch = useDispatch();
+  const { postUserProfil } = useApi();
+
   const onSubmit = async (data) => {
     const response = await putUserProfil(data);
     if (response.status === 200) {
-      updateUser();
+      dispatch(getProfileData(postUserProfil));
       setDisplayInput(false);
     } else {
       setError("firstName", {

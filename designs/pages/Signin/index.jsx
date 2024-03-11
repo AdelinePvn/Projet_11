@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./signin.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { sendToken } from "../../redux/index";
 
 import { useApi } from "../../useApi";
 
@@ -27,8 +26,6 @@ export default function SignIn() {
   const onSubmit = async (data) => {
     const response = await postUserAccount(data);
     if (response?.status === 200) {
-      dispatch(sendToken(response.data.body.token));
-
       navigate("/profil");
     } else {
       setError("email", {

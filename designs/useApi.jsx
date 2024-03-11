@@ -1,12 +1,12 @@
-import axios from "axios";
-import { useContext } from "react";
-import { ConnexionTokenContext } from "./context/ConnexionTokenContext";
-import { UserContext } from "./context/UserContext";
 import useAxiosWithInterceptor from "./instanceAxios";
+import { successfulLogin } from "./redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useApi = () => {
-  const { token, setToken, deleteToken } = useContext(ConnexionTokenContext);
   const axiosInstance = useAxiosWithInterceptor();
+  const token = useSelector((state) => state.user.token);
+
+  const dispatch = useDispatch();
 
   const postUserAccount = async (data) => {
     const { email, password } = data;
@@ -17,7 +17,7 @@ export const useApi = () => {
         password: password,
       })
       .then((response) => {
-        setToken(response.data.body.token);
+        dispatch(successfulLogin({ token: response.data.body.token }));
         return response;
       })
       .catch((error) => {

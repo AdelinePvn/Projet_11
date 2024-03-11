@@ -1,5 +1,5 @@
 import "./header.scss";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
@@ -7,12 +7,18 @@ import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { NavLink } from "react-router-dom";
 import BankLogo from "../../img/argentBankLogo.png";
-import { ConnexionTokenContext } from "../../context/ConnexionTokenContext";
-import { UserContext } from "../../context/UserContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/index.jsx";
+import { useApi } from "../../useApi.jsx";
 
 export default function Header() {
-  const { token, deleteToken } = useContext(ConnexionTokenContext);
-  const { user, setUser } = useContext(UserContext);
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.user.token);
+
+  const dispatch = useDispatch();
+  const { postUserProfil } = useApi();
+
+  const updateUser = () => dispatch(getProfileData(postUserProfil));
 
   return (
     <nav className="main-nav">
@@ -35,8 +41,7 @@ export default function Header() {
             to="/"
             className="main-nav-item"
             onClick={() => {
-              deleteToken();
-              setUser(null);
+              dispatch(logoutUser());
             }}
           >
             <FontAwesomeIcon icon={faSignOutAlt} />

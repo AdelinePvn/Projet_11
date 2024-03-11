@@ -1,22 +1,67 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 
-const loginSlice = createSlice({
-  name: "login",
-  initialState: {
-    token: "",
-  },
+const initialUserState = {
+  currentState: "",
+  loader: false,
+  loggedIn: false,
+  token: localStorage.getItem("token") || undefined,
+  user: {},
+  error: false,
+};
+
+const clearLocalStorage = () => {
+  localStorage.removeItem("token");
+};
+
+export const getProfileData = createAsyncThunk(
+  "user/getProfileData",
+  async (postUserProfil, { getState, dispatch }) => {
+    const { token } = getState().user;
+
+    if (!token) {
+      return;
+    }
+
+    const response = await postUserProfil();
+
+    if (response.status === 200) {
+      dispatch(userSlice.actions.userDetails(response.data.body));
+    }
+  }
+);
+
+const userSlice = createSlice({
+  name: "user",
+  initialState: initialUserState,
   reducers: {
-    sendToken: function (state, action) {
-      state.token = action.payload;
+    successfulLogin: (state, action) => {
+      state.loggedIn = true;
+      state.token = action.payload.token;
+      state.currentState = "logged";
+      state.loader = true;
+
+      localStorage.setItem("token", action.payload.token);
+    },
+    userDetails: (state, action) => {
+      state.user = action.payload;
+      state.loader = false;
+    },
+    logoutUser: () => {
+      clearLocalStorage();
+      return initialUserState;
     },
   },
 });
 
 export const mainStore = configureStore({
   reducer: {
-    login: loginSlice.reducer,
+    user: userSlice.reducer,
   },
 });
 
-export const { sendToken } = loginSlice.actions;
-export default loginSlice.reducer;
+export const { successfulLogin, userDetails, logoutUser } = userSlice.actions;
+export default userSlice.reducer;
